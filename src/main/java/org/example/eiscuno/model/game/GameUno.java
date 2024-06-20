@@ -128,4 +128,15 @@ public class GameUno implements IGameUno {
             System.out.println(player.getTypePlayer() + " have now: " + player.getCardsPlayer().size() + " cards");
         }
     }
+
+    public boolean checkForWinner() {
+        if (humanPlayer.getCardsPlayer().isEmpty()) {
+            System.out.println("¡Felicidades! Has ganado.");
+            return true;
+        } else if (machinePlayer.getCardsPlayer().isEmpty()) {
+            System.out.println("¡La máquina ha ganado!");
+            return true;
+        }
+        return false;
+    }
 }
