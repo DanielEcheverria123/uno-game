@@ -2,9 +2,11 @@ package org.example.eiscuno.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import org.example.eiscuno.model.card.Card;
 import org.example.eiscuno.model.deck.Deck;
 import org.example.eiscuno.model.game.GameUno;
@@ -169,5 +171,14 @@ public class GameUnoController {
         } else {
             System.out.println("You have more than one card. UNO cannot be called yet.");
         }
+    }
+
+    @FXML
+    void onHandlerButtonExit(ActionEvent event) {
+        // Obtener el Stage actual (ventana del juego)
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+        // Cerrar el Stage (esto cerrará la ventana del juego y finalizará la aplicación)
+        stage.close();
     }
 }
