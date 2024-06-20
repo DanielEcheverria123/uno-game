@@ -3,6 +3,7 @@ package org.example.eiscuno.controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -14,6 +15,8 @@ import org.example.eiscuno.model.machine.ThreadPlayMachine;
 import org.example.eiscuno.model.machine.ThreadSingUNOMachine;
 import org.example.eiscuno.model.player.Player;
 import org.example.eiscuno.model.table.Table;
+
+import java.util.List;
 
 /**
  * Controller class for the Uno game.
@@ -55,6 +58,8 @@ public class GameUnoController {
 
         threadPlayMachine = new ThreadPlayMachine(this.table, this.machinePlayer, this.tableImageView);
         threadPlayMachine.start();
+        showMachineCards();
+
     }
 
     /**
@@ -180,5 +185,35 @@ public class GameUnoController {
 
         // Cerrar el Stage (esto cerrará la ventana del juego y finalizará la aplicación)
         stage.close();
+    }
+
+
+    private void showMachineCards() {
+        gridPaneCardsMachine.getChildren().clear(); // Limpiar cualquier carta previamente mostrada
+
+        List<Card> machineCards = machinePlayer.getCardsPlayer();
+
+        // Mostrar solo las primeras 4 cartas de la máquina
+        int cardsToShow = Math.min(machineCards.size(), 4);
+
+        int columnIndex = 0;
+        int rowIndex = 0;
+
+        // Recorrer las cartas de la máquina y agregar ImageView para mostrar el reverso
+        for (int i = 0; i < cardsToShow; i++) {
+            Card card = machineCards.get(i);
+
+            ImageView cardImageView = new ImageView(new Image("org/example/eiscuno/cards-uno/card_uno.png")); // Ruta a la imagen del reverso
+            cardImageView.setFitHeight(90); // Ajustar el tamaño según sea necesario
+            cardImageView.setFitWidth(70);  // Ajustar el tamaño según sea necesario
+
+            gridPaneCardsMachine.add(cardImageView, columnIndex, rowIndex); // Agregar ImageView al GridPane
+
+            columnIndex++;
+            if (columnIndex == 4) { // Asumiendo que el GridPane tiene 4 columnas
+                columnIndex = 0;
+                rowIndex++;
+            }
+        }
     }
 }

@@ -16,14 +16,7 @@
    <left>
       <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <Button layoutX="50.0" layoutY="30.0" mnemonicParsing="false" onAction="#onHandleTakeCard" prefHeight="149.0" prefWidth="100.0" text="Baraja">
-               <graphic>
-                  <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@cards-uno/deck_of_cards.png" />
-                     </image>
-                  </ImageView>
-               </graphic></Button>
+            <Button layoutX="50.0" layoutY="30.0" mnemonicParsing="false" onAction="#onHandleTakeCard" prefHeight="149.0" prefWidth="100.0" style="-fx-background-image: url('org/example/eiscuno/cards-uno/card_uno.png'); -fx-background-size: cover; -fx-background-position: center;" />
          </children>
       </Pane>
    </left>
@@ -51,9 +44,9 @@
    <top>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" BorderPane.alignment="CENTER">
          <children>
-            <Label text="EISC Uno" textFill="RED">
+            <Label text="Uno" textFill="RED">
                <font>
-                  <Font name="Berlin Sans FB Bold" size="18.0" />
+                  <Font name="System Bold" size="18.0" />
                </font>
             </Label>
             <GridPane fx:id="gridPaneCardsMachine">
@@ -67,7 +60,7 @@
                   <RowConstraints />
                </rowConstraints>
             </GridPane>
-            <Button mnemonicParsing="false" onAction="#onHandlerButtonExit" text="Salir" />
+            <Button mnemonicParsing="false" text="Salir" />
          </children>
       </HBox>
    </top>
