@@ -138,7 +138,16 @@ public class GameUnoController {
      */
     @FXML
     void onHandleTakeCard(ActionEvent event) {
-        // Implement logic to take a card here
+        Card card = this.deck.takeCard();
+        if (card != null) {
+            this.humanPlayer.addCard(card);
+            printCardsHumanPlayer(); // Update the displayed cards
+            System.out.println("Human player took a card: " + card.getValue() + " " + card.getColor());
+
+        } else {
+            // Handle the case where the deck is empty (optional)
+            System.out.println("The deck is empty! Cannot take a card.");
+        }
     }
 
     /**
@@ -148,6 +157,14 @@ public class GameUnoController {
      */
     @FXML
     void onHandleUno(ActionEvent event) {
-        // Implement logic to handle Uno event here
+        int cardsLeft = this.humanPlayer.getCardsPlayer().size();
+        if (cardsLeft == 1) {
+            // Player has only one card left, call the game logic to handle "UNO"
+            this.gameUno.haveSungOne("HUMAN_PLAYER");
+            System.out.println("Human player said UNO.");
+
+        } else {
+            System.out.println("You have more than one card. UNO cannot be called yet.");
+        }
     }
 }
