@@ -3,6 +3,7 @@ package org.example.eiscuno.controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -214,6 +215,17 @@ public class GameUnoController {
                 columnIndex = 0;
                 rowIndex++;
             }
+        }
+    }
+
+    private void checkWinner() {
+        if (gameUno.checkForWinner()) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("¡Fin del juego!");
+            alert.setHeaderText(null);
+            alert.setContentText("¡Felicidades! Has ganado el juego.");
+            alert.showAndWait();
+
         }
     }
 }
