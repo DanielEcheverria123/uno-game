@@ -15,6 +15,7 @@ public class GameUno implements IGameUno {
     private Player machinePlayer;
     private Deck deck;
     private Table table;
+    private String winnerMessage;
 
     /**
      * Constructs a new GameUno instance.
@@ -131,12 +132,17 @@ public class GameUno implements IGameUno {
 
     public boolean checkForWinner() {
         if (humanPlayer.getCardsPlayer().isEmpty()) {
-            System.out.println("¡Felicidades! Has ganado.");
+            winnerMessage = "¡Felicidades! Has ganado.";
             return true;
         } else if (machinePlayer.getCardsPlayer().isEmpty()) {
-            System.out.println("¡La máquina ha ganado!");
+            winnerMessage = "¡La máquina ha ganado!";
             return true;
         }
         return false;
+    }
+
+    public String getWinnerMessage() {
+        return winnerMessage;
+
     }
 }
