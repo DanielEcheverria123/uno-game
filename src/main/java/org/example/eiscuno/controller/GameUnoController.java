@@ -44,6 +44,7 @@ public class GameUnoController {
     public void initialize() {
         initVariables();
         this.gameUno.startGame();
+        this.tableImageView.setImage(this.table.getCardsTable().get(0).getImage());
         printCardsHumanPlayer();
 
         threadSingUNOMachine = new ThreadSingUNOMachine(this.humanPlayer.getCardsPlayer());
@@ -78,17 +79,19 @@ public class GameUnoController {
             ImageView cardImageView = card.getCard();
 
             cardImageView.setOnMouseClicked((MouseEvent event) -> {
-                // Aqui deberian verificar si pueden en la tabla jugar esa carta
-                gameUno.playCard(card);
-                tableImageView.setImage(card.getImage());
-                humanPlayer.removeCard(findPosCardsHumanPlayer(card));
-                threadPlayMachine.setHasPlayerPlayed(true);
-                printCardsHumanPlayer();
+                    if(this.gameUno.playCard(card)){
+                        this.tableImageView.setImage(card.getImage());
+                        this.humanPlayer.removeCard(findPosCardsHumanPlayer(card));
+                        this.threadPlayMachine.setHasPlayerPlayed(true);
+                        printCardsHumanPlayer();
+                        this.gameUno.validateSpecialCard(card, this.machinePlayer);
+                    }
             });
-
             this.gridPaneCardsPlayer.add(cardImageView, i, 0);
         }
     }
+
+
 
     /**
      * Finds the position of a specific card in the human player's hand.
