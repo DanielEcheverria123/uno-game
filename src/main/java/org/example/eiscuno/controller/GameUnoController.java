@@ -90,16 +90,33 @@ public class GameUnoController {
             cardImageView.setOnMouseClicked((MouseEvent event) -> {
                 System.out.println("CLICKEE LA CARTA:" + card.getValue() + " " + card.getColor());
                 if (this.gameUno.playCard(card)) {
-                    System.out.println("CLICKEE UNA CARTA NEA");
-                    this.tableImageView.setImage(card.getImage());
-                    this.humanPlayer.removeCard(findPosCardsHumanPlayer(card));
-                    this.threadPlayMachine.setHasPlayerPlayed(true);
-                    printCardsHumanPlayer();
-                    this.gameUno.validateSpecialCard(card, this.machinePlayer);
+                    if (this.threadPlayMachine.getHasPlayerPlayed() == false) {
+                        System.out.println("Carta Seleccionada es Valida");
+                        // if (card.getValue().equals("WILD") || card.getValue().equals("+4")
+                        // || card.getValue().equals("+2") || card.getValue().equals("RESERVE")
+                        // || card.getValue().equals("SKIP")) {
+
+                        // } else {
+                        // this.table.addCardOnTheTable(card);
+
+                        // }
+                        this.tableImageView.setImage(card.getImage());
+                        this.humanPlayer.removeCard(findPosCardsHumanPlayer(card));
+                        this.threadPlayMachine.setHasPlayerPlayed(true);
+                        printCardsHumanPlayer();
+                        this.gameUno.validateSpecialCard(card, this.machinePlayer);
+
+                    }
                 }
             });
             this.gridPaneCardsPlayer.add(cardImageView, i, 0);
         }
+
+        for (int i = 0; i < machinePlayer.getCardsPlayer().size(); i++) {
+            System.out.printf(machinePlayer.getCardsPlayer().get(i).getColor() + " "
+                    + machinePlayer.getCardsPlayer().get(i).getValue() + " ");
+        }
+
     }
 
     /**

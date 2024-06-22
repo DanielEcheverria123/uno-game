@@ -7,7 +7,8 @@ import org.example.eiscuno.model.table.Table;
 
 /**
  * Represents a game of Uno.
- * This class manages the game logic and interactions between players, deck, and the table.
+ * This class manages the game logic and interactions between players, deck, and
+ * the table.
  */
 public class GameUno implements IGameUno {
 
@@ -60,7 +61,8 @@ public class GameUno implements IGameUno {
     }
 
     /**
-     * Handles the scenario when a player shouts "Uno", forcing the other player to draw a card.
+     * Handles the scenario when a player shouts "Uno", forcing the other player to
+     * draw a card.
      *
      * @param playerWhoSang The player who shouted "Uno".
      */
@@ -74,7 +76,8 @@ public class GameUno implements IGameUno {
     }
 
     /**
-     * Retrieves the current visible cards of the human player starting from a specific position.
+     * Retrieves the current visible cards of the human player starting from a
+     * specific position.
      *
      * @param posInitCardToShow The initial position of the cards to show.
      * @return An array of cards visible to the human player.
@@ -95,7 +98,8 @@ public class GameUno implements IGameUno {
     /**
      * Checks if the game is over.
      *
-     * @return True if the deck is empty, indicating the game is over; otherwise, false.
+     * @return True if the deck is empty, indicating the game is over; otherwise,
+     *         false.
      */
     @Override
     public Boolean isGameOver() {
@@ -107,16 +111,9 @@ public class GameUno implements IGameUno {
      *
      */
     @Override
-    public void validateSpecialCard(Card card, Player player) {
+    public boolean validateSpecialCard(Card card, Player player) {
         int numberOfCards = 0;
-
-        if(card.getValue().contains("+2")) {
-            numberOfCards = 2;
-        } else if (card.getValue().contains("+4")) {
-            numberOfCards = 4;
-        }
-
-        if(numberOfCards > 0){
+        if (numberOfCards > 0) {
             System.out.println(player.getTypePlayer() + " have: " + player.getCardsPlayer().size() + " cards");
         }
 
@@ -124,10 +121,43 @@ public class GameUno implements IGameUno {
             player.addCard(this.deck.takeCard());
         }
 
-        if(numberOfCards > 0){
+        if (numberOfCards > 0) {
             System.out.println(player.getTypePlayer() + " eat now: " + numberOfCards + " cards");
             System.out.println(player.getTypePlayer() + " have now: " + player.getCardsPlayer().size() + " cards");
         }
+        if (card.getValue().contains("+2")) {
+            numberOfCards = 2;
+            for (int i = 0; i < numberOfCards; i++) {
+                Card cardFromWild = deck.takeCard();
+                System.out.println(i);
+                player.addCard(cardFromWild);
+            }
+            return true;
+        } else if (card.getValue().contains("+4")) {
+            numberOfCards = 4;
+            for (int i = 0; i < numberOfCards; i++) {
+                System.out.println(i);
+                Card cardFromWild = deck.takeCard();
+                player.addCard(cardFromWild);
+            }
+            return true;
+
+        } else if (card.getValue().contains("SKIP")) {
+            numberOfCards = 1;
+            return true;
+
+        } else if (card.getValue().contains("RESERVE")) {
+            numberOfCards = 1;
+            return true;
+
+        } else if (card.getValue().contains("WILD")) {
+            numberOfCards = 1;
+            return true;
+
+        } else {
+            return false;
+        }
+
     }
 
     public boolean checkForWinner() {
