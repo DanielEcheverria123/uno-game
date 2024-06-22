@@ -125,6 +125,7 @@ public class GameUno implements IGameUno {
             System.out.println(player.getTypePlayer() + " eat now: " + numberOfCards + " cards");
             System.out.println(player.getTypePlayer() + " have now: " + player.getCardsPlayer().size() + " cards");
         }
+        // Check if the card is a special draw card
         if (card.getValue().contains("+2")) {
             numberOfCards = 2;
             for (int i = 0; i < numberOfCards; i++) {

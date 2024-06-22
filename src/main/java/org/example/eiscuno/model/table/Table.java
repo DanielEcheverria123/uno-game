@@ -27,44 +27,58 @@ public class Table {
         System.out.print("Current card on the table: ");
         System.out.println(currentCardOnTheTable.getColor() + " " + currentCardOnTheTable.getValue());
         System.out.println(card.getColor() + " " + card.getValue());
+        String chosenColor = "";
         if (card.getColor().equals(currentCardOnTheTable.getColor()) ||
                 card.getValue().equals(currentCardOnTheTable.getValue()) || card.getColor().equals("NON_COLOR")) {
             if (card.getValue().equals("WILD") || card.getValue().equals("+4")
                     || card.getValue().equals("+2") || card.getValue().equals("RESERVE")
-                    || card.getValue().equals("SKIP")) {
+                    || card.getValue().equals("SKIP") || card.getColor().equals("NON_COLOR")) {
                 switch (card.getValue()) {
                     case "WILD":
                         System.out.println("Carta comodin WILD");
+                        chosenColor = "RED";
+                        System.out.println(card.getColor() + " " + card.getValue());
+                        card.setColor(chosenColor);
                         this.cardsTable.add(card);
+                        System.out.println(card.getColor() + " " + card.getValue());
+                        System.out.println("ZONA WILD");
 
-                        break;
-                    case "FOUR_WILD_DRAW":
+                        return true;
+
+                    case "+4":
                         System.out.println("Carta comodin FOUR_WILD_DRAW");
+                        chosenColor = "YELLOW";
+                        // System.out.println(card.getColor() + " " + card.getValue());
+                        card.setColor(chosenColor);
                         this.cardsTable.add(card);
+                        // System.out.println(card.getColor() + " " + card.getValue());
 
-                        break;
-                    case "TWO_WILD_DRAW":
+                        return true;
+
+                    case "+2":
                         System.out.println("Carta comodin TWO_WILD_DRAW");
                         this.cardsTable.add(card);
+                        return true;
 
-                        break;
                     case "RESERVE":
                         System.out.println("Carta comodin RESERVE");
                         this.cardsTable.add(card);
+                        System.out.println(card.getColor() + " " + card.getValue());
 
-                        break;
+                        return true;
+
                     case "SKIP":
                         System.out.println("Carta comodin SKIP");
                         this.cardsTable.add(card);
 
-                        break;
+                        return true;
 
                     default:
                         break;
                 }
-                System.out.println("Carta comodin");
-                this.cardsTable.add(card);
-                return true;
+                // System.out.println("Carta comodin");
+                // this.cardsTable.add(card);
+                // return true;
             } else {
                 System.out.println("Coincide con la carta de la mesa");
                 this.cardsTable.add(card);

@@ -16,7 +16,7 @@ public class Card {
     /**
      * Constructs a Card with the specified image URL and name.
      *
-     * @param url the URL of the card image
+     * @param url   the URL of the card image
      * @param value of the card
      */
     public Card(String url, String value, String color) {
@@ -64,5 +64,9 @@ public class Card {
 
     public String getColor() {
         return color;
+    }
+
+    public void setColor(String value) {
+        this.color = value;
     }
 }
