@@ -92,19 +92,35 @@ public class GameUnoController {
                 if (this.gameUno.playCard(card)) {
                     if (this.threadPlayMachine.getHasPlayerPlayed() == false) {
                         System.out.println("Carta Seleccionada es Valida");
-                        // if (card.getValue().equals("WILD") || card.getValue().equals("+4")
-                        // || card.getValue().equals("+2") || card.getValue().equals("RESERVE")
-                        // || card.getValue().equals("SKIP")) {
-
-                        // } else {
-                        // this.table.addCardOnTheTable(card);
-
-                        // }
                         this.tableImageView.setImage(card.getImage());
                         this.humanPlayer.removeCard(findPosCardsHumanPlayer(card));
-                        this.threadPlayMachine.setHasPlayerPlayed(true);
                         printCardsHumanPlayer();
-                        this.gameUno.validateSpecialCard(card, this.machinePlayer);
+                        if (this.gameUno.validateSpecialCard(card, this.machinePlayer) == true) {
+                            if (card.getValue().equals("RESERVE")) {
+                                this.threadPlayMachine.setHasPlayerPlayed(false);
+                            } else if (card.getValue().equals("SKIP")) {
+                                this.threadPlayMachine.setHasPlayerPlayed(false);
+                            }
+                            if ((card.getColor().equals("RED") && card.getValue().equals("WILD"))
+                                    || (card.getColor().equals("BLUE") && card.getValue().equals("WILD"))
+                                    || (card.getColor().equals("GREEN") && card.getValue().equals("WILD"))
+                                    || (card.getColor().equals("YELLOW") && card.getValue().equals("WILD"))) {
+                                this.threadPlayMachine.setHasPlayerPlayed(true);
+                                System.out.println("AHORA SÍ Verificó las WILD");
+                            }
+
+                            if ((card.getColor().equals("RED") && card.getValue().equals("+4"))
+                                    || (card.getColor().equals("BLUE") && card.getValue().equals("+4"))
+                                    || (card.getColor().equals("GREEN") && card.getValue().equals("+4"))
+                                    || (card.getColor().equals("YELLOW") && card.getValue().equals("+4"))) {
+                                this.threadPlayMachine.setHasPlayerPlayed(true);
+                                System.out.println("AHORA SÍ Verificó el +4");
+
+                            }
+
+                        } else {
+                            this.threadPlayMachine.setHasPlayerPlayed(true);
+                        }
 
                     }
                 }
