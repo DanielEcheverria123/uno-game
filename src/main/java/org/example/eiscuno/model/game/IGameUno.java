@@ -46,5 +46,5 @@ public interface IGameUno {
      * Validate if is a special card.
      *
      */
-    void validateSpecialCard(Card card, Player player);
+    boolean validateSpecialCard(Card card, Player player);
 }

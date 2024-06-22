@@ -17,6 +17,7 @@ import org.example.eiscuno.model.machine.ThreadSingUNOMachine;
 import org.example.eiscuno.model.player.Player;
 import org.example.eiscuno.model.table.Table;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 /**
@@ -57,7 +58,7 @@ public class GameUnoController {
         Thread t = new Thread(threadSingUNOMachine, "ThreadSingUNO");
         t.start();
 
-        threadPlayMachine = new ThreadPlayMachine(this.table, this.machinePlayer, this.tableImageView);
+        threadPlayMachine = new ThreadPlayMachine(this.table, this.machinePlayer, this.tableImageView, this.deck);
         threadPlayMachine.start();
         showMachineCards();
 
@@ -87,19 +88,36 @@ public class GameUnoController {
             ImageView cardImageView = card.getCard();
 
             cardImageView.setOnMouseClicked((MouseEvent event) -> {
-                    if(this.gameUno.playCard(card)){
+                System.out.println("CLICKEE LA CARTA:" + card.getValue() + " " + card.getColor());
+                if (this.gameUno.playCard(card)) {
+                    if (this.threadPlayMachine.getHasPlayerPlayed() == false) {
+                        System.out.println("Carta Seleccionada es Valida");
+                        // if (card.getValue().equals("WILD") || card.getValue().equals("+4")
+                        // || card.getValue().equals("+2") || card.getValue().equals("RESERVE")
+                        // || card.getValue().equals("SKIP")) {
+
+                        // } else {
+                        // this.table.addCardOnTheTable(card);
+
+                        // }
                         this.tableImageView.setImage(card.getImage());
                         this.humanPlayer.removeCard(findPosCardsHumanPlayer(card));
                         this.threadPlayMachine.setHasPlayerPlayed(true);
                         printCardsHumanPlayer();
                         this.gameUno.validateSpecialCard(card, this.machinePlayer);
+
                     }
+                }
             });
             this.gridPaneCardsPlayer.add(cardImageView, i, 0);
         }
+
+        for (int i = 0; i < machinePlayer.getCardsPlayer().size(); i++) {
+            System.out.printf(machinePlayer.getCardsPlayer().get(i).getColor() + " "
+                    + machinePlayer.getCardsPlayer().get(i).getValue() + " ");
+        }
+
     }
-
-
 
     /**
      * Finds the position of a specific card in the human player's hand.
@@ -150,15 +168,23 @@ public class GameUnoController {
     @FXML
     void onHandleTakeCard(ActionEvent event) {
         Card card = this.deck.takeCard();
-        if (card != null) {
-            this.humanPlayer.addCard(card);
-            printCardsHumanPlayer(); // Update the displayed cards
-            System.out.println("Human player took a card: " + card.getValue() + " " + card.getColor());
+        if (this.threadPlayMachine.getHasPlayerPlayed() == false) {
+            if (card != null) {
+                this.humanPlayer.addCard(card);
+                printCardsHumanPlayer(); // Update the displayed cards
+                System.out.println("Human player took a card: " + card.getValue() + " " + card.getColor());
+                this.threadPlayMachine.setHasPlayerPlayed(true);
+
+            } else {
+                // Handle the case where the deck is empty (optional)
+                System.out.println("The deck is empty! Cannot take a card.");
+            }
 
         } else {
-            // Handle the case where the deck is empty (optional)
-            System.out.println("The deck is empty! Cannot take a card.");
+            return;
+
         }
+
     }
 
     /**
@@ -180,14 +206,16 @@ public class GameUnoController {
     }
 
     @FXML
-    void onHandlerButtonExit(ActionEvent event) {
+    void onHandlerButtonExit(ActionEvent event) throws InvocationTargetException {
         // Obtener el Stage actual (ventana del juego)
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
-        // Cerrar el Stage (esto cerrará la ventana del juego y finalizará la aplicación)
+        // Proceed to interrupt the current threads
+        ThreadGroup currentGroup = Thread.currentThread().getThreadGroup();
+        currentGroup.interrupt();
+        // Cerrar el Stage (esto cerrará la ventana del juego y finalizará la
+        // aplicación)
         stage.close();
     }
-
 
     private void showMachineCards() {
         gridPaneCardsMachine.getChildren().clear(); // Limpiar cualquier carta previamente mostrada
@@ -204,9 +232,13 @@ public class GameUnoController {
         for (int i = 0; i < cardsToShow; i++) {
             Card card = machineCards.get(i);
 
-            ImageView cardImageView = new ImageView(new Image("org/example/eiscuno/cards-uno/card_uno.png")); // Ruta a la imagen del reverso
+            ImageView cardImageView = new ImageView(new Image("org/example/eiscuno/cards-uno/card_uno.png")); // Ruta a
+                                                                                                              // la
+                                                                                                              // imagen
+                                                                                                              // del
+                                                                                                              // reverso
             cardImageView.setFitHeight(90); // Ajustar el tamaño según sea necesario
-            cardImageView.setFitWidth(70);  // Ajustar el tamaño según sea necesario
+            cardImageView.setFitWidth(70); // Ajustar el tamaño según sea necesario
 
             gridPaneCardsMachine.add(cardImageView, columnIndex, rowIndex); // Agregar ImageView al GridPane
 
