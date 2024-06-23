@@ -58,7 +58,8 @@ public class GameUnoController {
         Thread t = new Thread(threadSingUNOMachine, "ThreadSingUNO");
         t.start();
 
-        threadPlayMachine = new ThreadPlayMachine(this.table, this.machinePlayer, this.tableImageView, this.deck);
+        threadPlayMachine = new ThreadPlayMachine(this.table, this.machinePlayer, this.tableImageView, this.deck,
+                this.humanPlayer);
         threadPlayMachine.start();
         showMachineCards();
 
@@ -115,6 +116,15 @@ public class GameUnoController {
                                     || (card.getColor().equals("YELLOW") && card.getValue().equals("+4"))) {
                                 this.threadPlayMachine.setHasPlayerPlayed(true);
                                 System.out.println("AHORA SÍ Verificó el +4");
+
+                            }
+
+                            if ((card.getColor().equals("RED") && card.getValue().equals("+2"))
+                                    || (card.getColor().equals("BLUE") && card.getValue().equals("+2"))
+                                    || (card.getColor().equals("GREEN") && card.getValue().equals("+2"))
+                                    || (card.getColor().equals("YELLOW") && card.getValue().equals("+2"))) {
+                                this.threadPlayMachine.setHasPlayerPlayed(true);
+                                System.out.println("AHORA SÍ Verificó el +2");
 
                             }
 

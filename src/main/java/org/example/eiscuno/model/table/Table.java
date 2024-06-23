@@ -86,8 +86,9 @@ public class Table {
             }
         } else {
             System.out.println("No coincide con la carta de la mesa");
-            System.out.println("Carta en la mesa: " + currentCardOnTheTable.getColor() + " y " + card.getColor());
-            System.out.println("Carta en la mesa: " + currentCardOnTheTable.getValue() + " y " + card.getValue());
+            System.out.println("Carta en la mesa: " + currentCardOnTheTable.getColor() + " y "
+                    + currentCardOnTheTable.getValue());
+            System.out.println("Carta en la mesa: " + card.getColor() + " y " + card.getValue());
             System.out.println(card.getColor() + " " + card.getValue());
 
         }
