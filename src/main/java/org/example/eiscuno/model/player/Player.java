@@ -3,6 +3,7 @@ package org.example.eiscuno.model.player;
 import org.example.eiscuno.model.card.Card;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a player in the Uno game.
@@ -14,7 +15,7 @@ public class Player implements IPlayer {
     /**
      * Constructs a new Player object with an empty hand of cards.
      */
-    public Player(String typePlayer){
+    public Player(String typePlayer) {
         this.cardsPlayer = new ArrayList<Card>();
         this.typePlayer = typePlayer;
     };
@@ -25,7 +26,7 @@ public class Player implements IPlayer {
      * @param card The card to be added to the player's hand.
      */
     @Override
-    public void addCard(Card card){
+    public void addCard(Card card) {
         cardsPlayer.add(card);
     }
 
@@ -56,11 +57,15 @@ public class Player implements IPlayer {
      * @return The card at the specified index in the player's hand.
      */
     @Override
-    public Card getCard(int index){
+    public Card getCard(int index) {
         return cardsPlayer.get(index);
     }
 
     public String getTypePlayer() {
         return typePlayer;
+    }
+
+    public synchronized List<Card> getCards() {
+        return new ArrayList<>(cardsPlayer); // Return a copy to avoid concurrent modification issues
     }
 }
