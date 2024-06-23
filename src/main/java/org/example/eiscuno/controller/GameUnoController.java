@@ -54,7 +54,8 @@ public class GameUnoController {
         this.tableImageView.setImage(this.table.getCardsTable().get(0).getImage());
         printCardsHumanPlayer();
 
-        threadSingUNOMachine = new ThreadSingUNOMachine(this.humanPlayer.getCardsPlayer());
+        threadSingUNOMachine = new ThreadSingUNOMachine(this.humanPlayer.getCardsPlayer(),
+                this.machinePlayer.getCardsPlayer(), this.deck, this.humanPlayer, this.machinePlayer, this.table);
         Thread t = new Thread(threadSingUNOMachine, "ThreadSingUNO");
         t.start();
 
@@ -138,11 +139,6 @@ public class GameUnoController {
             this.gridPaneCardsPlayer.add(cardImageView, i, 0);
         }
 
-        for (int i = 0; i < machinePlayer.getCardsPlayer().size(); i++) {
-            System.out.printf(machinePlayer.getCardsPlayer().get(i).getColor() + " "
-                    + machinePlayer.getCardsPlayer().get(i).getValue() + " ");
-        }
-
     }
 
     /**
@@ -220,13 +216,26 @@ public class GameUnoController {
      */
     @FXML
     void onHandleUno(ActionEvent event) {
+        System.out.println("\nCARTAS DE LA MÄQUINA");
+        for (int i = 0; i < machinePlayer.getCardsPlayer().size(); i++) {
+            System.out.printf(machinePlayer.getCardsPlayer().get(i).getColor() + " "
+                    + machinePlayer.getCardsPlayer().get(i).getValue() + " ");
+        }
+
+        System.out.println("\nCARTAS DEL JUGADOR");
+        for (int i = 0; i < humanPlayer.getCardsPlayer().size(); i++) {
+            System.out.printf(humanPlayer.getCardsPlayer().get(i).getColor() + " "
+                    + humanPlayer.getCardsPlayer().get(i).getValue() + " ");
+        }
+        System.out.println("\n");
         int cardsLeft = this.humanPlayer.getCardsPlayer().size();
         if (cardsLeft == 1) {
             // Player has only one card left, call the game logic to handle "UNO"
-            this.gameUno.haveSungOne("HUMAN_PLAYER");
+            // this.gameUno.haveSungOne("HUMAN_PLAYER");
             System.out.println("Human player said UNO.");
 
         } else {
+            // this.gameUno.haveSungOne("MACHINE_PLAYER");
             System.out.println("You have more than one card. UNO cannot be called yet.");
         }
     }
