@@ -163,15 +163,15 @@ public class GameUno implements IGameUno {
 
     }
 
-    public boolean checkForWinner() {
+    public String checkForWinner() {
         if (humanPlayer.getCardsPlayer().isEmpty()) {
             winnerMessage = "¡Felicidades! Has ganado.";
-            return true;
+            return "HUMAN_WIN";
         } else if (machinePlayer.getCardsPlayer().isEmpty()) {
             winnerMessage = "¡La máquina ha ganado!";
-            return true;
+            return "MACHINE_WIN";
         }
-        return false;
+        return "NOBODY_WIN";
     }
 
     public String getWinnerMessage() {
