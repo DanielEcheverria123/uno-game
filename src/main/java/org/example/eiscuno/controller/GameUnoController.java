@@ -1,5 +1,6 @@
 package org.example.eiscuno.controller;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -54,13 +55,15 @@ public class GameUnoController {
         this.tableImageView.setImage(this.table.getCardsTable().get(0).getImage());
         printCardsHumanPlayer();
 
-        threadSingUNOMachine = new ThreadSingUNOMachine(this.humanPlayer.getCardsPlayer());
-        Thread t = new Thread(threadSingUNOMachine, "ThreadSingUNO");
-        t.start();
-
         threadPlayMachine = new ThreadPlayMachine(this.table, this.machinePlayer, this.tableImageView, this.deck,
                 this.humanPlayer);
         threadPlayMachine.start();
+        threadSingUNOMachine = new ThreadSingUNOMachine(this.humanPlayer.getCardsPlayer(),
+                this.machinePlayer.getCardsPlayer(), this.deck, this.humanPlayer, this.machinePlayer, this.table,
+                gridPaneCardsPlayer, threadPlayMachine, this.gameUno, this.tableImageView, this);
+        Thread t = new Thread(threadSingUNOMachine, "ThreadSingUNO");
+        t.start();
+
         showMachineCards();
 
     }
@@ -80,68 +83,90 @@ public class GameUnoController {
     /**
      * Prints the human player's cards on the grid pane.
      */
-    private void printCardsHumanPlayer() {
-        this.gridPaneCardsPlayer.getChildren().clear();
-        Card[] currentVisibleCardsHumanPlayer = this.gameUno.getCurrentVisibleCardsHumanPlayer(this.posInitCardToShow);
+    public void printCardsHumanPlayer() {
+        Platform.runLater(() -> {
 
-        for (int i = 0; i < currentVisibleCardsHumanPlayer.length; i++) {
-            Card card = currentVisibleCardsHumanPlayer[i];
-            ImageView cardImageView = card.getCard();
+            this.gridPaneCardsPlayer.getChildren().clear();
+            Card[] currentVisibleCardsHumanPlayer = this.gameUno
+                    .getCurrentVisibleCardsHumanPlayer(this.posInitCardToShow);
 
-            cardImageView.setOnMouseClicked((MouseEvent event) -> {
-                System.out.println("CLICKEE LA CARTA:" + card.getValue() + " " + card.getColor());
-                if (this.gameUno.playCard(card)) {
-                    if (this.threadPlayMachine.getHasPlayerPlayed() == false) {
-                        System.out.println("Carta Seleccionada es Valida");
-                        this.tableImageView.setImage(card.getImage());
-                        this.humanPlayer.removeCard(findPosCardsHumanPlayer(card));
-                        printCardsHumanPlayer();
-                        if (this.gameUno.validateSpecialCard(card, this.machinePlayer) == true) {
-                            if (card.getValue().equals("RESERVE")) {
-                                this.threadPlayMachine.setHasPlayerPlayed(false);
-                            } else if (card.getValue().equals("SKIP")) {
-                                this.threadPlayMachine.setHasPlayerPlayed(false);
-                            }
-                            if ((card.getColor().equals("RED") && card.getValue().equals("WILD"))
-                                    || (card.getColor().equals("BLUE") && card.getValue().equals("WILD"))
-                                    || (card.getColor().equals("GREEN") && card.getValue().equals("WILD"))
-                                    || (card.getColor().equals("YELLOW") && card.getValue().equals("WILD"))) {
+            for (int i = 0; i < currentVisibleCardsHumanPlayer.length; i++) {
+                Card card = currentVisibleCardsHumanPlayer[i];
+                ImageView cardImageView = card.getCard();
+
+                cardImageView.setOnMouseClicked((MouseEvent event) -> {
+                    System.out.println("CLICKEE LA CARTA:" + card.getValue() + " " + card.getColor());
+                    if (this.gameUno.playCard(card)) {
+                        if (this.threadPlayMachine.getHasPlayerPlayed() == false) {
+                            System.out.println("Carta Seleccionada es Valida");
+                            this.tableImageView.setImage(card.getImage());
+                            this.humanPlayer.removeCard(findPosCardsHumanPlayer(card));
+                            printCardsHumanPlayer();
+                            if (this.gameUno.validateSpecialCard(card, this.machinePlayer) == true) {
+                                if (card.getValue().equals("RESERVE")) {
+                                    this.threadPlayMachine.setHasPlayerPlayed(false);
+                                    machinePlayer.setProtected(false);
+                                    // humanPlayer.setProtected(false);
+                                } else if (card.getValue().equals("SKIP")) {
+                                    this.threadPlayMachine.setHasPlayerPlayed(false);
+                                    machinePlayer.setProtected(false);
+                                    // humanPlayer.setProtected(false);
+                                }
+                                if ((card.getColor().equals("RED") && card.getValue().equals("WILD"))
+                                        || (card.getColor().equals("BLUE") && card.getValue().equals("WILD"))
+                                        || (card.getColor().equals("GREEN") && card.getValue().equals("WILD"))
+                                        || (card.getColor().equals("YELLOW") && card.getValue().equals("WILD"))) {
+                                    this.threadPlayMachine.setHasPlayerPlayed(true);
+                                    machinePlayer.setProtected(false);
+                                    // humanPlayer.setProtected(false);
+                                    System.out.println("AHORA SÍ Verificó las WILD");
+                                }
+
+                                if ((card.getColor().equals("RED") && card.getValue().equals("+4"))
+                                        || (card.getColor().equals("BLUE") && card.getValue().equals("+4"))
+                                        || (card.getColor().equals("GREEN") && card.getValue().equals("+4"))
+                                        || (card.getColor().equals("YELLOW") && card.getValue().equals("+4"))) {
+                                    this.threadPlayMachine.setHasPlayerPlayed(true);
+                                    machinePlayer.setProtected(false);
+                                    // humanPlayer.setProtected(false);
+                                    System.out.println("AHORA SÍ Verificó el +4");
+
+                                }
+
+                                if ((card.getColor().equals("RED") && card.getValue().equals("+2"))
+                                        || (card.getColor().equals("BLUE") && card.getValue().equals("+2"))
+                                        || (card.getColor().equals("GREEN") && card.getValue().equals("+2"))
+                                        || (card.getColor().equals("YELLOW") && card.getValue().equals("+2"))) {
+                                    this.threadPlayMachine.setHasPlayerPlayed(true);
+                                    machinePlayer.setProtected(false);
+                                    // humanPlayer.setProtected(false);
+                                    System.out.println("AHORA SÍ Verificó el +2");
+
+                                }
+
+                            } else {
                                 this.threadPlayMachine.setHasPlayerPlayed(true);
-                                System.out.println("AHORA SÍ Verificó las WILD");
                             }
 
-                            if ((card.getColor().equals("RED") && card.getValue().equals("+4"))
-                                    || (card.getColor().equals("BLUE") && card.getValue().equals("+4"))
-                                    || (card.getColor().equals("GREEN") && card.getValue().equals("+4"))
-                                    || (card.getColor().equals("YELLOW") && card.getValue().equals("+4"))) {
-                                this.threadPlayMachine.setHasPlayerPlayed(true);
-                                System.out.println("AHORA SÍ Verificó el +4");
-
-                            }
-
-                            if ((card.getColor().equals("RED") && card.getValue().equals("+2"))
-                                    || (card.getColor().equals("BLUE") && card.getValue().equals("+2"))
-                                    || (card.getColor().equals("GREEN") && card.getValue().equals("+2"))
-                                    || (card.getColor().equals("YELLOW") && card.getValue().equals("+2"))) {
-                                this.threadPlayMachine.setHasPlayerPlayed(true);
-                                System.out.println("AHORA SÍ Verificó el +2");
-
-                            }
-
-                        } else {
-                            this.threadPlayMachine.setHasPlayerPlayed(true);
                         }
-
                     }
-                }
-            });
-            this.gridPaneCardsPlayer.add(cardImageView, i, 0);
-        }
+                });
+                this.gridPaneCardsPlayer.add(cardImageView, i, 0);
+            }
+        });
 
+        System.out.println("\nCARTAS DE LA MÄQUINA");
         for (int i = 0; i < machinePlayer.getCardsPlayer().size(); i++) {
             System.out.printf(machinePlayer.getCardsPlayer().get(i).getColor() + " "
                     + machinePlayer.getCardsPlayer().get(i).getValue() + " ");
         }
+
+        System.out.println("\nCARTAS DEL JUGADOR");
+        for (int i = 0; i < humanPlayer.getCardsPlayer().size(); i++) {
+            System.out.printf(humanPlayer.getCardsPlayer().get(i).getColor() + " "
+                    + humanPlayer.getCardsPlayer().get(i).getValue() + " ");
+        }
+        System.out.println("\n");
 
     }
 
@@ -193,23 +218,35 @@ public class GameUnoController {
      */
     @FXML
     void onHandleTakeCard(ActionEvent event) {
-        Card card = this.deck.takeCard();
-        if (this.threadPlayMachine.getHasPlayerPlayed() == false) {
-            if (card != null) {
-                this.humanPlayer.addCard(card);
-                printCardsHumanPlayer(); // Update the displayed cards
-                System.out.println("Human player took a card: " + card.getValue() + " " + card.getColor());
-                this.threadPlayMachine.setHasPlayerPlayed(true);
+
+        // Replenish deck
+        if (this.deck.isEmpty()) {
+            System.out.println("THIS DECK IS EMPTY");
+            // this.deck.replenishDeck();
+        } else {
+            if (humanPlayer.isProtected()) {
+                humanPlayer.setProtected(false);
+            }
+            System.out.println("THIS DECK IS NOT EMPTY");
+            Card card = this.deck.takeCard();
+            if (this.threadPlayMachine.getHasPlayerPlayed() == false) {
+                if (card != null) {
+                    this.humanPlayer.addCard(card);
+                    printCardsHumanPlayer(); // Update the displayed cards
+                    System.out.println("Human player took a card: " + card.getValue() + " " + card.getColor());
+                    this.threadPlayMachine.setHasPlayerPlayed(true);
+
+                } else {
+                    // Handle the case where the deck is empty (optional)
+                    System.out.println("The deck is empty! Cannot take a card.");
+                }
 
             } else {
-                // Handle the case where the deck is empty (optional)
-                System.out.println("The deck is empty! Cannot take a card.");
+                return;
+
             }
-
-        } else {
-            return;
-
         }
+        machinePlayer.setProtected(false);
 
     }
 
@@ -220,13 +257,25 @@ public class GameUnoController {
      */
     @FXML
     void onHandleUno(ActionEvent event) {
-        int cardsLeft = this.humanPlayer.getCardsPlayer().size();
-        if (cardsLeft == 1) {
-            // Player has only one card left, call the game logic to handle "UNO"
-            this.gameUno.haveSungOne("HUMAN_PLAYER");
-            System.out.println("Human player said UNO.");
 
+        int cardsLeft = this.humanPlayer.getCardsPlayer().size();
+        int machineCardsLeft = this.machinePlayer.getCardsPlayer().size();
+
+        if (machineCardsLeft == 1) {
+            // Machine has only one card left, call the game logic to handle "UNO"
+            this.gameUno.haveSungOne("HUMAN_PLAYER");
+            System.out.println("Machine player said UNO.");
+            showMachineCards();
+        } else if (cardsLeft == 1) {
+            // Player has only one card left, call the game logic to handle "UNO"
+            // this.gameUno.haveSungOne("HUMAN_PLAYER");
+            System.out.println("Human player said UNO.");
+            System.out.println(humanPlayer.isProtected());
+            System.out.println("NOS PROTEGEMOS DE LA MÁQUINA");
+            humanPlayer.setProtected(true);
+            System.out.println("VERIFICANDO SI ESTAMOS PROTEGIDOS, Y CUANTO DURA:" + humanPlayer.isProtected());
         } else {
+            // this.gameUno.haveSungOne("MACHINE_PLAYER");
             System.out.println("You have more than one card. UNO cannot be called yet.");
         }
     }
@@ -243,7 +292,7 @@ public class GameUnoController {
         stage.close();
     }
 
-    private void showMachineCards() {
+    public void showMachineCards() {
         gridPaneCardsMachine.getChildren().clear(); // Limpiar cualquier carta previamente mostrada
 
         List<Card> machineCards = machinePlayer.getCardsPlayer();

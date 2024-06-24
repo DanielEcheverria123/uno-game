@@ -11,6 +11,8 @@ import java.util.List;
 public class Player implements IPlayer {
     private ArrayList<Card> cardsPlayer;
     private String typePlayer;
+    private volatile boolean isProtected;
+    private String drew;
 
     /**
      * Constructs a new Player object with an empty hand of cards.
@@ -18,6 +20,8 @@ public class Player implements IPlayer {
     public Player(String typePlayer) {
         this.cardsPlayer = new ArrayList<Card>();
         this.typePlayer = typePlayer;
+        this.isProtected = false;
+        this.drew = "";
     };
 
     /**
@@ -27,7 +31,9 @@ public class Player implements IPlayer {
      */
     @Override
     public void addCard(Card card) {
-        cardsPlayer.add(card);
+        if (isProtected == false) {
+            cardsPlayer.add(card);
+        }
     }
 
     /**
@@ -67,5 +73,21 @@ public class Player implements IPlayer {
 
     public synchronized List<Card> getCards() {
         return new ArrayList<>(cardsPlayer); // Return a copy to avoid concurrent modification issues
+    }
+
+    public synchronized void setProtected(boolean isProtected) {
+        this.isProtected = isProtected;
+    }
+
+    public synchronized boolean isProtected() {
+        return isProtected;
+    }
+
+    public synchronized void setDrew(String drew) {
+        this.drew = drew;
+    }
+
+    public synchronized String getDrew() {
+        return drew;
     }
 }
