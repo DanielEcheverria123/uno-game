@@ -19,7 +19,10 @@ import org.example.eiscuno.model.player.Player;
 import org.example.eiscuno.model.table.Table;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * Controller class for the Uno game.
@@ -56,7 +59,7 @@ public class GameUnoController {
         printCardsHumanPlayer();
 
         threadPlayMachine = new ThreadPlayMachine(this.table, this.machinePlayer, this.tableImageView, this.deck,
-                this.humanPlayer);
+                this.humanPlayer, this);
         threadPlayMachine.start();
         threadSingUNOMachine = new ThreadSingUNOMachine(this.humanPlayer.getCardsPlayer(),
                 this.machinePlayer.getCardsPlayer(), this.deck, this.humanPlayer, this.machinePlayer, this.table,
@@ -222,7 +225,7 @@ public class GameUnoController {
         // Replenish deck
         if (this.deck.isEmpty()) {
             System.out.println("THIS DECK IS EMPTY");
-            // this.deck.replenishDeck();
+            replenishDeck();
         } else {
             if (humanPlayer.isProtected()) {
                 humanPlayer.setProtected(false);
@@ -247,7 +250,7 @@ public class GameUnoController {
             }
         }
         machinePlayer.setProtected(false);
-
+        checkWinner();
     }
 
     /**
@@ -325,14 +328,58 @@ public class GameUnoController {
         }
     }
 
-    private void checkWinner() {
-        if (gameUno.checkForWinner()) {
+    public void checkWinner() {
+        if (gameUno.checkForWinner().equals("HUMAN_WIN")) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("¡Fin del juego!");
             alert.setHeaderText(null);
             alert.setContentText("¡Felicidades! Has ganado el juego.");
             alert.showAndWait();
 
+        } else if (gameUno.checkForWinner().equals("MACHINE_WIN")) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("¡Fin del juego!");
+            alert.setHeaderText(null);
+            alert.setContentText("¡La máquina ha ganado el juego!");
+            alert.showAndWait();
         }
     }
+
+    public void replenishDeck() {
+        ArrayList<Card> oldCardsTable = table.getCardsTable();
+        System.out.println("FOR REPLENISH DECK");
+
+        // Imprimir las cartas en la mesa antes de procesarlas
+        for (int i = 0; i < oldCardsTable.size(); i++) {
+            System.out.println(oldCardsTable.get(i).getColor() + " " + oldCardsTable.get(i).getValue());
+        }
+
+        // Crear una nueva pila para el nuevo mazo
+        Stack<Card> newDeck = new Stack<>();
+
+        // Obtener la última carta y eliminarla de la mesa
+        Card lastCard = oldCardsTable.get(oldCardsTable.size() - 1);
+        oldCardsTable.remove(oldCardsTable.size() - 1);
+
+        // Añadir todas las cartas restantes a la nueva pila
+        newDeck.addAll(oldCardsTable);
+        System.out.println(newDeck);
+        System.out.println("Deck size: " + newDeck.size());
+        System.out.println(newDeck);
+
+        // Barajar las cartas en la nueva pila
+        Collections.shuffle(newDeck);
+
+        // Reponer el mazo hasta que esté vacío
+        while (!newDeck.isEmpty()) {
+            deck.replenishDeck(newDeck.pop());
+        }
+        System.out.println("Deck replenished");
+
+        // Limpiar las cartas de la mesa y añadir de nuevo la última carta
+        table.getCardsTable().clear();
+        table.getCardsTable().add(lastCard);
+        tableImageView.setImage(lastCard.getImage());
+    }
+
 }

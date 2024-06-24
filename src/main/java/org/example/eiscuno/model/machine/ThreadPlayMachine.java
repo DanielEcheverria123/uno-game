@@ -1,6 +1,8 @@
 package org.example.eiscuno.model.machine;
 
 import javafx.scene.image.ImageView;
+
+import org.example.eiscuno.controller.GameUnoController;
 import org.example.eiscuno.model.card.Card;
 import org.example.eiscuno.model.deck.Deck;
 import org.example.eiscuno.model.player.Player;
@@ -13,15 +15,17 @@ public class ThreadPlayMachine extends Thread {
     private ImageView tableImageView;
     private volatile boolean hasPlayerPlayed;
     private Deck deck;
+    private GameUnoController controller;
 
     public ThreadPlayMachine(Table table, Player machinePlayer, ImageView tableImageView, Deck deck,
-            Player humanPlayer) {
+            Player humanPlayer, GameUnoController controller) {
         this.table = table;
         this.machinePlayer = machinePlayer;
         this.tableImageView = tableImageView;
         this.hasPlayerPlayed = false;
         this.deck = deck;
         this.humanPlayer = humanPlayer;
+        this.controller = controller;
     }
 
     public void run() {
@@ -147,6 +151,10 @@ public class ThreadPlayMachine extends Thread {
         if (lastCardMachineNotMatch) {
             // Eat card
             System.out.println("La máquina no tiene carta para jugar, come carta");
+            if (deck.isEmpty()) {
+                controller.replenishDeck();
+
+            }
             Card cardToEat = this.deck.takeCard();
             System.out.println("Carta a comer: " + cardToEat.getColor() + " " + cardToEat.getValue());
             machinePlayer.addCard(cardToEat);
@@ -162,6 +170,7 @@ public class ThreadPlayMachine extends Thread {
             System.out.printf(machinePlayer.getCardsPlayer().get(i).getColor() + " "
                     + machinePlayer.getCardsPlayer().get(i).getValue() + " ");
         }
+        controller.checkWinner();
     }
 
     public void setHasPlayerPlayed(boolean hasPlayerPlayed) {

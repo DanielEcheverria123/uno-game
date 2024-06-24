@@ -120,8 +120,8 @@ public class Deck {
      * 
      * 
      */
-    public void replenishDeck() {
-        deckOfCards.clear();
-        initializeDeck();
+    public void replenishDeck(Card card) {
+        deckOfCards.push(card);
+        System.out.println(card);
     }
 }
